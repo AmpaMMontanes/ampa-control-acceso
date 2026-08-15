@@ -96,10 +96,49 @@
 
   </div>
 
-  <script>
+   <script>
+
+    const URL_APPS_SCRIPT =
+      "https://script.google.com/macros/s/AKfycbxJo4LfNqj660xyqOs0t5KWOyBcf9Z8Wir7btLg8ztQ7Z7f0KZTHck8KbRVAN49kzXeeg/exec";
 
     let escanerQR = null;
+function cargarEventos() {
 
+  fetch(URL_APPS_SCRIPT + "?eventos=1")
+    .then(function(respuesta) {
+      return respuesta.json();
+    })
+    .then(function(eventos) {
+
+      const selector =
+        document.getElementById("evento");
+
+      selector.innerHTML = "";
+
+      eventos.forEach(function(evento) {
+
+        const opcion =
+          document.createElement("option");
+
+        opcion.value = evento.id;
+
+        opcion.textContent =
+          evento.nombre + " — " + evento.fecha;
+
+        selector.appendChild(opcion);
+      });
+
+    })
+    .catch(function(error) {
+
+      document.getElementById("evento").innerHTML =
+        '<option>Error al cargar eventos</option>';
+
+      console.error(error);
+    });
+}
+
+cargarEventos();
     document
       .getElementById("botonEscanear")
       .addEventListener("click", iniciarEscaner);
