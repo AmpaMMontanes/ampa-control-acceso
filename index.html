@@ -170,13 +170,18 @@ cargarEventos();
               height: 250
             }
           },
-          function(codigo) {
+         function(codigo) {
 
-            resultado.innerHTML =
-              "🟢 QR DETECTADO<br><br>" +
-              codigo;
+  const evento =
+    document.getElementById("evento").value;
 
-          },
+  resultado.innerHTML =
+    "🟢 QR DETECTADO<br><br>" +
+    "QR: " + codigo +
+    "<br><br>" +
+    "EVENTO: " + evento;
+
+},
           function(error) {
 
             // Sigue buscando el QR.
