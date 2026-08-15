@@ -171,6 +171,10 @@ cargarEventos();
             }
           },
          function(codigo) {
+          if (escanerQR) {
+  escanerQR.stop();
+  escanerQR = null;
+} 
 
   const evento =
     document.getElementById("evento").value;
