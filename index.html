@@ -176,10 +176,76 @@ cargarEventos();
     document.getElementById("evento").value;
 
   resultado.innerHTML =
-    "🟢 QR DETECTADO<br><br>" +
-    "QR: " + codigo +
-    "<br><br>" +
-    "EVENTO: " + evento;
+    "⏳ Comprobando socio...";
+
+  // Extraer el número de socio de la URL del QR
+  let numeroSocio = "";
+
+  try {
+
+    const url = new URL(codigo);
+
+    numeroSocio =
+      url.searchParams.get("socio") || "";
+
+  } catch (error) {
+
+    resultado.innerHTML =
+      "🔴 QR no válido.";
+
+    return;
+  }
+
+  if (!numeroSocio) {
+
+    resultado.innerHTML =
+      "🔴 El QR no contiene número de socio.";
+
+    return;
+  }
+
+  // Llamar a Apps Script
+  const urlComprobacion =
+    "https://script.google.com/macros/s/AKfycbxJo4LfNqj660xyqOs0t5KWOyBcf9Z8Wir7btLg8ztQ7Z7f0KZTHck8KbRVAN49kzXeeg/exec" +
+    "?comprobar=1" +
+    "&socio=" + encodeURIComponent(numeroSocio) +
+    "&evento=" + encodeURIComponent(evento);
+
+  fetch(urlComprobacion)
+
+    .then(function(respuesta) {
+      return respuesta.json();
+    })
+
+    .then(function(datos) {
+
+      if (datos.ok) {
+
+        resultado.innerHTML =
+          "🟢 SOCIO VÁLIDO<br><br>" +
+          "Nº SOCIO: " + datos.socio +
+          "<br>" +
+          "EVENTO: " + datos.evento +
+          "<br>" +
+          "ESTADO: " + datos.estadoSocio;
+
+      } else {
+
+        resultado.innerHTML =
+          "🔴 ACCESO DENEGADO<br><br>" +
+          datos.resultado;
+
+      }
+
+    })
+
+    .catch(function(error) {
+
+      resultado.innerHTML =
+        "🔴 Error al comprobar el socio.<br><br>" +
+        error;
+
+    });
 
 },
           function(error) {
